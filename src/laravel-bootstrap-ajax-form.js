@@ -30,17 +30,19 @@
 
             // Callback related parameters
             preventDefaultBeforeSend: false,
-            beforeSend: null,
             preventDefaultError: false,
-            error: null,
             preventDefaultSuccess: false,
+
+            // User defined callback functions
+            beforeSend: null,
+            error: null,
             success: null,
-            preventDefaultAlways: false,
-            always: null,
+            complete: null,
 
             // AJAX related parameters
             dataType: 'json',
             password: null,
+            timeout: null
         }, options );
 
         var resetForms = function() {
@@ -123,11 +125,6 @@
 
                             // Add the user defined classes
                             submit.addClass(settings.submitClassDuringCall);
-
-                            //call the user defined beforeSend function
-                            if ($.isFunction(settings.beforeSend)) {
-                                settings.beforesend();
-                            }
                         }
 
                         // Run the user provided beforeSend function, if available
@@ -135,14 +132,14 @@
                             settings.beforeSend();
                         }
                     },
-                    error: function(response){
+                    error: function(jqXHR, textStatus, errorThrown){
 
                         // Check if the user wants to prevent us from displaying
                         // the errors laravel returned with the response
                         if (!settings.preventErrorDisplay) {
                             resetForms();
                             if (response.status == 422) {
-                                var errors = $.parseJSON(response.responseText);
+                                var errors = $.parseJSON(jqXHR.responseText);
 
                                 // Iterate through errors object
                                 $.each(errors, function(field, message) {
@@ -184,10 +181,10 @@
 
                         // Run the user provided error function, if available
                         if ($.isFunction(settings.error)) {
-                            settings.error();
+                            settings.error(jqXHR, textStatus, errorThrown);
                         }
                     },
-                    success: function(){
+                    success: function(data, textStatus, jqXHR){
                         resetForms();
 
                         //Check if the user wants to prevent our success function
@@ -203,15 +200,14 @@
 
                         // Run the user provided success function, if available
                         if ($.isFunction(settings.success)) {
-                            settings.success();
+                            settings.success(data, textStatus, jqXHR);
                         }
                     },
-                    always: function(){
+                    complete: function(jqXHR, textStatus){
 
-
-                        // Run the user provided always function, if available
-                        if ($.isFunction(settings.always)) {
-                            settings.always();
+                        // Run the user provided complete function, if available
+                        if ($.isFunction(settings.complete)) {
+                            settings.complete(jqXHR, textStatus);
                         }
                     },
                     dataType: settings.dataType,
