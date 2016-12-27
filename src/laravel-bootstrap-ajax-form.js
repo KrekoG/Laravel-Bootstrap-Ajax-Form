@@ -45,9 +45,7 @@
             complete: null,
 
             // AJAX related parameters
-            dataType: 'json',
-            password: null,
-            timeout: null
+            ajaxParameters:{}
         }, options );
 
         var resetForms = function() {
@@ -117,8 +115,8 @@
                     data = form.serialize(),
                 }
 
-                // Send the request
-                $.ajax({
+                // Append the plugins parameters to the user provided ajax parameters
+                var finalAjaxParameters = $.extend(options.ajaxParameters, {
                     url: form.attr('action'),
                     type: form.attr('method'),
                     beforeSend: function (jqXHR, settings){
@@ -271,13 +269,12 @@
                             settings.complete(jqXHR, textStatus);
                         }
                     },
-                    dataType: settings.dataType,
                     data: data,
-                    cache: false,
-                    contentType: contentType,
-                    processData: false,
-                    password: settings.password
+                    contentType: contentType
                 });
+
+                // Send the request
+                $.ajax(finalAjaxParameters);
             });
 
         });
