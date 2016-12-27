@@ -121,7 +121,7 @@
                 $.ajax({
                     url: form.attr('action'),
                     type: form.attr('method'),
-                    beforeSend: function (){
+                    beforeSend: function (jqXHR, settings){
 
                         // Check if the user wants to prevent us from modifying
                         // the submit button
@@ -167,7 +167,7 @@
 
                         // Run the user provided beforeSend function, if available
                         if ($.isFunction(settings.beforeSend)) {
-                            settings.beforeSend();
+                            settings.beforeSend(jqXHR, settings);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
