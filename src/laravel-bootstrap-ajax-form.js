@@ -33,6 +33,10 @@
             preventDefaultError: false,
             preventDefaultSuccess: false,
 
+            // User defined input validation function.
+            // Return with true if the input is valid.
+            inputIsValid: null,
+
             // User defined callback functions
             beforeSend: null,
             error: null,
@@ -66,6 +70,14 @@
                 // Collect data
                 var data;
                 var contentType;
+
+                //run user provided validation, if available
+                if ($.isFunction(settings.inputIsValid)) {
+                    if (!settings.inputIsValid())
+                    {
+                        return false;
+                    }
+                }
 
                 // Check for file inputs
                 if (form.has('[type=file]')) {
