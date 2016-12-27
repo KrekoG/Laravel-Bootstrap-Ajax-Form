@@ -1,0 +1,15 @@
+{
+    "name": "KrekoG/Laravel-Bootstrap-Ajax-Form",
+    "description": "A bootstrap and laravel based ajax form sender.",
+    "authors": [
+        {
+            "name": "Gergely Krekó",
+            "email": "kreko.gergely@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "minimum-stability": "dev"
+}
