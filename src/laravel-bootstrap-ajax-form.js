@@ -8,17 +8,20 @@
         // Set default options
         var settings = $.extend({
 
-            // Submit behavior during call
+            // Callback related parameters
+            preventSubmitButtonModifications: false,
+
+            // Submit button behavior during call
             submitClassDuringCall: null,
             submitTextDuringCall: "Please wait...",
             submitDisabledDuringCall: true,
 
-            // Submit behavior after success
+            // Submit button behavior after success
             submitClassAfterSuccess: null,
             submitTextAfterSuccess: null,
             submitDisabledAfterSuccess: true,
 
-            // Submit behavior after error
+            // Submit button behavior after error
             submitClassAfterError: null,
             submitTextAfterError: null,
             submitDisabledAfterError: false,
@@ -27,11 +30,6 @@
             preventErrorDisplay : false;
             errorDisplayClass: 'has-error'
             errorMessageClass : 'help-block',
-
-            // Callback related parameters
-            preventDefaultBeforeSend: false,
-            preventDefaultError: false,
-            preventDefaultSuccess: false,
 
             // User defined input validation function.
             // Return with true if the input is valid.
@@ -113,8 +111,9 @@
                     type: form.attr('method'),
                     beforeSend: function (){
 
-                        //Check if the user wants to prevent our beforeSend function
-                        if (!settings.preventDefaultBeforeSend) {
+                        // Check if the user wants to prevent us from modifying
+                        // the submit button
+                        if (!settings.preventSubmitButtonModifications) {
 
                             // Set the submit buttons text
                             var submitTextOriginal;
@@ -127,7 +126,7 @@
                             }
 
                             // If the user did not set a text for it, store the original
-                            // text for the button for after the call
+                            // text of the button for after the call
                             if (!settings.submitTextAfterSuccess) {
                                 settings.submitTextAfterSuccess = submitTextOriginal;
                             }
@@ -135,8 +134,23 @@
                                 settings.submitTextAfterError = submitTextOriginal;
                             }
 
+                            // Disable submit button, if required
+                            if (settings.submitDisabledDuringCall) {
+                                submit.prop("disabled",true);
+                            }
+
+                            // Remove potential unneeded classes
+                            if (settings.submitClassAfterSuccess) {
+                                submit.removeClass(settings.submitClassAfterSuccess);
+                            }
+                            if (settings.submitClassAfterError) {
+                                submit.removeClass(settings.submitClassAfterError);
+                            }
+
                             // Add the user defined classes
-                            submit.addClass(settings.submitClassDuringCall);
+                            if (settings.submitClassDuringCall) {
+                                submit.addClass(settings.submitClassDuringCall);
+                            }
                         }
 
                         // Run the user provided beforeSend function, if available
@@ -147,7 +161,7 @@
                     error: function(jqXHR, textStatus, errorThrown){
 
                         // Check if the user wants to prevent us from displaying
-                        // the errors laravel returned with the response
+                        // the errors are what laravel returned with the response
                         if (!settings.preventErrorDisplay) {
                             resetForms();
                             if (response.status == 422) {
@@ -168,26 +182,33 @@
                                     var formGroup = $('[name=' + field + ']', form).closest('.form-group');
                                     formGroup.addClass(settings.errorDisplayClass).append('<p class="' + settings.errorMessageClass + '">' + message + '</p>');
                                 });
-
-                                // Reset submit.
-                                if (submit.is('button')) {
-                                    submit.html(submitOriginal);
-                                } else if (submit.is('input')) {
-                                    submit.val(submitOriginal);
-                                }
-
-                                // If successful, reload.
                             }
                         }
 
-                        //Check if the user wants to prevent our error function
-                        if (!settings.preventDefaultError) {
+                        // Check if the user wants to prevent us from modifying
+                        // the submit button
+                        if (!settings.preventSubmitButtonModifications) {
 
                             // Set the submit buttons text
                             if (submit.is('button')) {
                                 submit.html(settings.submitTextAfterError);
                             } else if (submit.is('input')) {
                                 submit.val(settings.submitTextAfterError);
+                            }
+
+                            // Disable submit button, if required
+                            if (settings.submitDisabledAfterError) {
+                                submit.prop("disabled",true);
+                            }
+
+                            // Remove potential unneeded classes
+                            if (settings.submitClassDuringCall) {
+                                submit.removeClass(settings.submitClassDuringCall);
+                            }
+
+                            // Add the user defined classes
+                            if (settings.submitClassAfterError) {
+                                submit.addClass(settings.submitClassAfterError);
                             }
                         }
 
@@ -199,14 +220,30 @@
                     success: function(data, textStatus, jqXHR){
                         resetForms();
 
-                        //Check if the user wants to prevent our success function
-                        if (!settings.preventDefaultSuccess) {
+                        // Check if the user wants to prevent us from modifying
+                        // the submit button
+                        if (!settings.preventSubmitButtonModifications) {
 
                             // Set the submit buttons text
                             if (submit.is('button')) {
                                 submit.html(settings.submitTextAfterSuccess);
                             } else if (submit.is('input')) {
                                 submit.val(settings.submitTextAfterSuccess);
+                            }
+
+                            // Disable submit button, if required
+                            if (settings.submitDisabledAfterSuccess) {
+                                submit.prop("disabled",true);
+                            }
+
+                            // Remove potential unneeded classes
+                            if (settings.submitClassDuringCall) {
+                                submit.removeClass(settings.submitClassDuringCall);
+                            }
+
+                            // Add the user defined classes
+                            if (settings.submitClassAfterSuccess) {
+                                submit.addClass(settings.submitClassAfterSuccess);
                             }
                         }
 
