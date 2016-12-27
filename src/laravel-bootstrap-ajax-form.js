@@ -8,6 +8,13 @@
         // Set default options
         var settings = $.extend({
 
+            // Form related parameters
+            // Resets the form when it's modal is opened
+            formIsOnModal = false;
+            // User defined input validation function.
+            // Return with true if the input is valid.
+            inputIsValid: null,
+
             // Callback related parameters
             preventSubmitButtonModifications: false,
 
@@ -31,10 +38,6 @@
             errorDisplayClass: 'has-error'
             errorMessageClass : 'help-block',
 
-            // User defined input validation function.
-            // Return with true if the input is valid.
-            inputIsValid: null,
-
             // User defined callback functions
             beforeSend: null,
             error: null,
@@ -55,6 +58,15 @@
 
         affectedForms.each(function() {
             var form = $(this);
+
+            // Setup modal event handler, if required
+            if (settings.formIsOnModal) {
+                // Search for closest modal upwards,
+                // add reset call when modal starts show animation
+                form.closest('.modal').on('show.bs.modal', function(e){
+                    resetForms();
+                });
+            }
 
             // Setup submit event handler
             form.on('submit.LaravelBootstrapAjaxForm', function(e) {
