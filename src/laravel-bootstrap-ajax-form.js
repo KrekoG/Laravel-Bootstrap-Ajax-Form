@@ -10,7 +10,7 @@
 
             // Form related parameters
             // Resets the form when it's modal is opened
-            formIsOnModal = false;
+            formIsOnModal: false,
             // User defined input validation function.
             // Return with true if the input is valid.
             inputIsValid: null,
@@ -34,8 +34,8 @@
             submitDisabledAfterError: false,
 
             // Error displaying parameters
-            preventErrorDisplay : false;
-            errorDisplayClass: 'has-error'
+            preventErrorDisplay : false,
+            errorDisplayClass: 'has-error',
             errorMessageClass : 'help-block',
 
             // User defined callback functions
@@ -51,7 +51,7 @@
         var resetForms = function() {
             var formItem = affectedForms.find('.form-group');
             formItem.removeClass(settings.errorDisplayClass);
-            formItem.find(settings.errorMessageClass).remove();
+            formItem.find('.' + settings.errorMessageClass).remove();
         }
 
         affectedForms.each(function() {
@@ -88,8 +88,8 @@
                 }
 
                 // Check for file inputs
-                if (form.has('[type=file]')) {
 
+                if (form.has('[type=file]').length) {
                     // If found, prepare submission via FormData object.
                     contentType = 'multipart/form-data';
                     data = new FormData();
@@ -112,14 +112,14 @@
                 // If no file input found, do not use FormData object (better browser compatibility).
                 else {
                     contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
-                    data = form.serialize(),
+                    data = form.serialize();
                 }
 
                 // Append the plugins parameters to the user provided ajax parameters
-                var finalAjaxParameters = $.extend(options.ajaxParameters, {
+                var finalAjaxParameters = $.extend(settings.ajaxParameters, {
                     url: form.attr('action'),
                     type: form.attr('method'),
-                    beforeSend: function (jqXHR, settings){
+                    beforeSend: function (jqXHR, callSettings){
 
                         // Check if the user wants to prevent us from modifying
                         // the submit button
@@ -165,7 +165,7 @@
 
                         // Run the user provided beforeSend function, if available
                         if ($.isFunction(settings.beforeSend)) {
-                            settings.beforeSend(jqXHR, settings);
+                            settings.beforeSend(jqXHR, callSettings);
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
@@ -174,7 +174,7 @@
                         // the errors are what laravel returned with the response
                         if (!settings.preventErrorDisplay) {
                             resetForms();
-                            if (response.status == 422) {
+                            if (jqXHR.status == 422) {
                                 var errors = $.parseJSON(jqXHR.responseText);
 
                                 // Iterate through errors object
