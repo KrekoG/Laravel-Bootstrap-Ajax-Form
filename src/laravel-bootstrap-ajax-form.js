@@ -146,7 +146,9 @@
 
                             // Disable submit button, if required
                             if (settings.submitDisabledDuringCall) {
-                                submit.prop("disabled",true);
+                                submit.prop("disabled", true);
+                            } else {
+                                submit.prop("disabled", false);
                             }
 
                             // Remove potential unneeded classes
@@ -208,7 +210,9 @@
 
                             // Disable submit button, if required
                             if (settings.submitDisabledAfterError) {
-                                submit.prop("disabled",true);
+                                submit.prop("disabled", true);
+                            } else {
+                                submit.prop("disabled", false);
                             }
 
                             // Remove potential unneeded classes
@@ -243,7 +247,9 @@
 
                             // Disable submit button, if required
                             if (settings.submitDisabledAfterSuccess) {
-                                submit.prop("disabled",true);
+                                submit.prop("disabled", true);
+                            } else {
+                                submit.prop("disabled", false);
                             }
 
                             // Remove potential unneeded classes
